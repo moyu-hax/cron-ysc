@@ -1,0 +1,21 @@
+
+name: Scheduled Job
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 时间 00:00 执行一次
+  push:
+    branches:
+      - main
+jobs:
+  visit-url:
+    runs-on: ubuntu-latest
+    env:
+      URL1: ${{ secrets.URL_1 }}
+      URL2: ${{ secrets.URL_2 }}
+    steps:
+      - name: Visit URL 1
+        run: curl $URL1
+      - name: Visit URL 2
+        run: curl $URL2
