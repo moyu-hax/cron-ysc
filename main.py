@@ -5,7 +5,7 @@ from config import account,wecom_bot,headers
 session = requests.session()
 # 设置header
 session.headers.update(headers)
-
+#autocheckin_ssr_py
 
 # 日志模块
 # logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
