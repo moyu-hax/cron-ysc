@@ -3,11 +3,7 @@ name: Scheduled Job
 
 on:
   workflow_dispatch:
-  #schedule:
-   # - cron: '30 11,23 * * *' # 每天 UTC 时间 11/30,23/30 执行一次
-  #push:
-   # branches:
-    #  - main
+
 jobs:
   visit-url:
     runs-on: ubuntu-latest
