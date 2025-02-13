@@ -1,17 +1,12 @@
-import logging,requests,json,sys
-from config import account,wecom_bot,headers
+import logging, requests, json, sys
+from config import headers
 
 # 会话保持
 session = requests.session()
 # 设置header
 session.headers.update(headers)
-#autocheckin_ssr_py
 
 # 日志模块
-# logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-# logger = logging.getLogger()
-
-# 兼容pm2使用流模式
 # 创建一个logger
 logger = logging.getLogger("ssr")
 # 设置日志级别（可选）
@@ -25,14 +20,12 @@ stdout_handler.setFormatter(formatter)
 # 将handler添加到logger
 logger.addHandler(stdout_handler)
 
-
-
 # 登录
 def login():
   logger.info('开始登录')
   try:
-    url = account['url']+'/auth/login'
-    data = {"email":account["email"],"passwd":account["password"]}
+    url = 'https://api.acck.io/api/v1/user/login'  # 更新登录URL
+    data = {"email": "qimo84bep15900@163.com", "passwd": "123456789"}  # 更新登录信息
     msg = session.post(url, data=data)
     text = json.loads(msg.text)
     if msg.status_code == 200 and text["ret"] == 1:
@@ -45,12 +38,11 @@ def login():
     logger.error(e)
     return False
 
-
 # 签到
 def checkin():
   logger.info('开始签到')
   try:
-    url = account['url']+'/user/checkin'
+    url = 'https://sign-service.acck.io/api/acLogs/sign'  # 更新签到URL
     msg = session.post(url)
     text = json.loads(msg.text)
     if msg.status_code == 200 and text["ret"] == 1:
@@ -62,34 +54,9 @@ def checkin():
     logger.error(e)
     return "抛出异常"
 
-
-# 企业微信群机器人通知
-def notice(content):
-  logger.info('发送通知')
-  data = {
-    "msgtype": "text",
-    "text": {
-      "content": f"ssr签到 \n\n {content}",
-      "mentioned_mobile_list": [wecom_bot["telphone"]]
-    }
-  }
-  data=json.dumps(data, ensure_ascii=False)
-  try:
-    url = f"https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={wecom_bot['key']}"
-    msg = session.post(url, data=data)
-    text = json.loads(msg.text)
-    if msg.status_code == 200 and text["errcode"] == 0:
-      logger.info(text["errmsg"])
-      logger.info('发送成功')
-    else:
-      logger.error("发送失败")
-  except Exception as e:
-    logger.error(e)
-
-
 # 入口
 if __name__ == '__main__':
   login_res = login()
-  if login_res :
+  if login_res:
     checkin_res = checkin()
-    notice(checkin_res)
+    logger.info(checkin_res)  # 输出签到结果
